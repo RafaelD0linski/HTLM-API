@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>API de Pokémon</title>
+</head>
+<body>
+
+  <h1>Meu Pokémon</h1>
+  <img id="pokemonImage" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png">
+  <br><br>
+
+  <button onclick="mostrarNome()">Mostrar Nome</button>
+  <p id="resultado"></p>
+
+  <script>
+    function mostrarNome() {
+      const id = 25; // Pikachu
+
+      fetch(`http://localhost:3000/pokemon/${id}`)
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById("resultado").textContent = `Nome do Pokémon: ${data.nome}`;
+        })
+        .catch(err => {
+          console.error(err);
+          document.getElementById("resultado").textContent = 'Erro ao buscar Pokémon';
+        });
+    }
+  </script>
+
+</body>
+</html>
