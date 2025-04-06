@@ -2,12 +2,12 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>API de Pokémon</title>
+  <title>Minha Pokédex</title>
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #d0eafc, #fcefd0); /* fundo harmonioso */
+      background: linear-gradient(135deg, #d0eafc, #fcefd0);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -32,8 +32,11 @@
       background-color: #ffffff;
       border-radius: 10px;
       padding: 20px;
-      text-align: center;
+      width: 200px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       transition: transform 0.2s;
     }
 
@@ -54,6 +57,8 @@
       border-radius: 5px;
       cursor: pointer;
       font-weight: bold;
+      margin-bottom: 10px;
+      transition: background-color 0.2s;
     }
 
     .card button:hover {
@@ -61,7 +66,7 @@
     }
 
     .card p {
-      margin-top: 10px;
+      margin: 0;
       font-weight: bold;
       color: #2c3e50;
     }
@@ -72,36 +77,42 @@
   <h1>Minha Pokédex</h1>
 
   <div id="pokemons">
-    <!-- Os pokémons serão gerados aqui -->
+    <!-- Cards serão inseridos aqui -->
   </div>
 
   <script>
-    const ids = [1, 4, 7, 25]; // IDs do mock
+    const ids = [1, 4, 7, 25]; // IDs dos Pokémons
     const container = document.getElementById("pokemons");
 
-    // Gera o card de cada Pokémon
     ids.forEach(id => {
+      // Cria o card
       const card = document.createElement("div");
       card.classList.add("card");
 
+      // Cria a imagem
       const img = document.createElement("img");
       img.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
       img.alt = `Pokemon ${id}`;
 
+      // Cria o botão
       const btn = document.createElement("button");
       btn.textContent = "Mostrar Nome";
       btn.onclick = () => mostrarNome(id);
 
+      // Cria o parágrafo onde o nome será exibido
       const p = document.createElement("p");
       p.id = `resultado-${id}`;
 
+      // Adiciona os elementos ao card
       card.appendChild(img);
       card.appendChild(btn);
       card.appendChild(p);
 
+      // Adiciona o card ao container principal
       container.appendChild(card);
     });
 
+    // Função para buscar o nome do Pokémon via API local
     function mostrarNome(id) {
       fetch(`http://localhost:3000/pokemon/${id}`)
         .then(res => res.json())
