@@ -5,7 +5,7 @@ const port = 3000;
 
 app.use(cors());
 
-// Banco de dados mock (poderia ser de verdade)
+// Mock 
 const pokemons = {
   25: { nome: 'Pikachu' },
   1: { nome: 'Bulbasaur' },
