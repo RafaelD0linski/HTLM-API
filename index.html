@@ -3,10 +3,73 @@
 <head>
   <meta charset="UTF-8">
   <title>API de Pokémon</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #d0eafc, #fcefd0); /* fundo harmonioso */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-top: 40px;
+    }
+
+    #pokemons {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px;
+      margin-top: 40px;
+      padding: 20px;
+    }
+
+    .card {
+      background-color: #ffffff;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+    }
+
+    .card img {
+      width: 100px;
+      margin-bottom: 10px;
+    }
+
+    .card button {
+      padding: 8px 12px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .card button:hover {
+      background-color: #2980b9;
+    }
+
+    .card p {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+  </style>
 </head>
 <body>
 
-  <h1>Pokémons</h1>
+  <h1>Minha Pokédex</h1>
 
   <div id="pokemons">
     <!-- Os pokémons serão gerados aqui -->
@@ -16,14 +79,14 @@
     const ids = [1, 4, 7, 25]; // IDs do mock
     const container = document.getElementById("pokemons");
 
-    // Gera a imagem e botão de cada Pokémon
+    // Gera o card de cada Pokémon
     ids.forEach(id => {
-      const div = document.createElement("div");
+      const card = document.createElement("div");
+      card.classList.add("card");
 
       const img = document.createElement("img");
       img.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
       img.alt = `Pokemon ${id}`;
-      img.style = "width: 100px; display: block; margin: 10px 0;";
 
       const btn = document.createElement("button");
       btn.textContent = "Mostrar Nome";
@@ -32,22 +95,22 @@
       const p = document.createElement("p");
       p.id = `resultado-${id}`;
 
-      div.appendChild(img);
-      div.appendChild(btn);
-      div.appendChild(p);
+      card.appendChild(img);
+      card.appendChild(btn);
+      card.appendChild(p);
 
-      container.appendChild(div);
+      container.appendChild(card);
     });
 
     function mostrarNome(id) {
       fetch(`http://localhost:3000/pokemon/${id}`)
         .then(res => res.json())
         .then(data => {
-          document.getElementById(`resultado-${id}`).textContent = `Nome do Pokémon: ${data.nome}`;
+          document.getElementById(`resultado-${id}`).textContent = `Nome: ${data.nome}`;
         })
         .catch(err => {
           console.error(err);
-          document.getElementById(`resultado-${id}`).textContent = 'Erro ao buscar Pokémon';
+          document.getElementById(`resultado-${id}`).textContent = 'Erro ao buscar';
         });
     }
   </script>
