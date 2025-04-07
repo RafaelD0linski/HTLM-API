@@ -20,6 +20,37 @@
       margin-top: 40px;
     }
 
+    form {
+      margin-top: 20px;
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 300px;
+    }
+
+    form input, form button {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    form button {
+      background-color: #3498db;
+      color: white;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    form button:hover {
+      background-color: #2980b9;
+    }
+
     #pokemons {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -76,53 +107,102 @@
 
   <h1>Minha Pokédex</h1>
 
-  <div id="pokemons">
-    <!-- Cards serão inseridos aqui -->
-  </div>
+  <form id="pokemonForm">
+    <input type="number" id="pokemonId" placeholder="ID do Pokémon" required />
+    <input type="text" id="pokemonNome" placeholder="Nome do Pokémon" required />
+    <button type="button" onclick="adicionarPokemon()">Adicionar</button>
+    <button type="button" onclick="atualizarPokemon()">Atualizar Nome</button>
+    <button type="button" onclick="removerPokemon()">Remover</button>
+  </form>
+
+  <div id="pokemons"></div>
 
   <script>
-    const ids = [1, 4, 7, 25]; // IDs dos Pokémons
     const container = document.getElementById("pokemons");
 
-    ids.forEach(id => {
-      // Cria o card
+    const ids = [1, 4, 7, 25];
+    ids.forEach(id => criarCard(id));
+
+    function criarCard(id) {
       const card = document.createElement("div");
       card.classList.add("card");
+      card.id = `card-${id}`;
 
-      // Cria a imagem
       const img = document.createElement("img");
       img.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
       img.alt = `Pokemon ${id}`;
 
-      // Cria o botão
       const btn = document.createElement("button");
       btn.textContent = "Mostrar Nome";
       btn.onclick = () => mostrarNome(id);
 
-      // Cria o parágrafo onde o nome será exibido
       const p = document.createElement("p");
       p.id = `resultado-${id}`;
 
-      // Adiciona os elementos ao card
       card.appendChild(img);
       card.appendChild(btn);
       card.appendChild(p);
 
-      // Adiciona o card ao container principal
       container.appendChild(card);
-    });
+    }
 
-    // Função para buscar o nome do Pokémon via API local
     function mostrarNome(id) {
       fetch(`http://localhost:3000/pokemon/${id}`)
         .then(res => res.json())
         .then(data => {
           document.getElementById(`resultado-${id}`).textContent = `Nome: ${data.nome}`;
         })
-        .catch(err => {
-          console.error(err);
+        .catch(() => {
           document.getElementById(`resultado-${id}`).textContent = 'Erro ao buscar';
         });
+    }
+
+    function adicionarPokemon() {
+      const id = document.getElementById('pokemonId').value;
+      const nome = document.getElementById('pokemonNome').value;
+
+      fetch('http://localhost:3000/pokemon', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, nome })
+      })
+      .then(res => res.json())
+      .then(data => {
+        alert(data.mensagem || data.erro);
+        if (!document.getElementById(`card-${id}`)) {
+          criarCard(id);
+        }
+      });
+    }
+
+    function atualizarPokemon() {
+      const id = document.getElementById('pokemonId').value;
+      const nome = document.getElementById('pokemonNome').value;
+
+      fetch(`http://localhost:3000/pokemon/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome })
+      })
+      .then(res => res.json())
+      .then(data => {
+        alert(data.mensagem || data.erro);
+        mostrarNome(id);
+      });
+    }
+
+    function removerPokemon() {
+      const id = document.getElementById('pokemonId').value;
+
+      fetch(`http://localhost:3000/pokemon/${id}`, {
+        method: 'DELETE'
+      })
+      .then(res => res.json())
+      .then(data => {
+        alert(data.mensagem || data.erro);
+        const card = document.getElementById(`card-${id}`);
+        if (card) container.removeChild(card);
+      });
     }
   </script>
 
